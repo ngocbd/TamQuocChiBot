@@ -55,12 +55,24 @@ namespace AutoTamQuocChi
                 Thread.Sleep(3000);
             }
         }
+        
+        public void CreateTeam()
+        {
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
+            var device = AdbClient.Instance.GetDevices().First();
+            AdbClient.Instance.ExecuteRemoteCommand("input tap 225 1200", device, receiver);
+            Thread.Sleep(3000);
+            AdbClient.Instance.ExecuteRemoteCommand("input tap 500 1200", device, receiver);
+            Thread.Sleep(3000);
+        }
         public void Mining()
         {
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
             var device = AdbClient.Instance.GetDevices().First();
             if (Utils.CompareAt(device, "SecondMining.png", new Rectangle(437, 749, 53, 41)))
             {
+                CreateTeam();
+                Console.WriteLine("Team Created!");
                 AdbClient.Instance.ExecuteRemoteCommand("input tap 461 783", device, receiver);
                 Thread.Sleep(3000);
             }
