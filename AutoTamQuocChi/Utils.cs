@@ -56,7 +56,7 @@ namespace AutoTamQuocChi
         }
         static void Main2(string[] args)
         {
-            Console.WriteLine("Bot Started ...");
+            Console.WriteLine("Bot Started ..");
 
 
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
