@@ -93,7 +93,7 @@ namespace AutoTamQuocChi
                 Thread.Sleep(5000);
 
             } 
-        }
+        } 
             public void Login()
         {
 
@@ -163,10 +163,20 @@ namespace AutoTamQuocChi
             Console.WriteLine("Go to maps...");
             SelectMining();
             Console.WriteLine("Selected Mining.");
-            //while (1==1) {
+            
             Mining();
             Console.WriteLine("Mining...");
-            //}
+            if (accountIndex == (Config.Tables["account"].Rows.Count - 1))
+            {
+                accountIndex = 0;
+            } else
+            {
+                accountIndex++;
+                
+            }
+            RestartApp();
+            Login();
+
         }
     }
 }
