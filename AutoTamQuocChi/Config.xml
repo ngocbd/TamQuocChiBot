@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<accounts>
+  <account>
+    <username>
+      kukixty
+    </username>
+    <password>
+      123456
+    </password>
+    <tasks>
+      <task>
+        <name>khaimo</name>
+      </task>
+    </tasks>
+  </account>  
+</accounts>
