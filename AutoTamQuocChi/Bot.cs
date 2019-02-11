@@ -38,9 +38,51 @@ namespace AutoTamQuocChi
 
 
         }
-        
-        public void Login()
+        public void GoToMaps()
         {
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
+            var device = AdbClient.Instance.GetDevices().First();
+            AdbClient.Instance.ExecuteRemoteCommand("input tap 100 1200", device, receiver);
+            Thread.Sleep(5000);
+        }
+        public void SelectMining()
+        {
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
+            var device = AdbClient.Instance.GetDevices().First();
+            if (Utils.CompareAt(device, "FirstMining.png", new Rectangle(142, 300, 83, 38)))
+            {
+                AdbClient.Instance.ExecuteRemoteCommand("input tap 185 319", device, receiver);
+                Thread.Sleep(3000);
+            }
+        }
+        public void Mining()
+        {
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
+            var device = AdbClient.Instance.GetDevices().First();
+            if (Utils.CompareAt(device, "SecondMining.png", new Rectangle(437, 749, 53, 41)))
+            {
+                AdbClient.Instance.ExecuteRemoteCommand("input tap 461 783", device, receiver);
+                Thread.Sleep(3000);
+            }
+        }
+        public void EscapeLeaveWindow()
+        {
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
+            var device = AdbClient.Instance.GetDevices().First();
+            AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
+            Thread.Sleep(5000);
+            AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
+            Thread.Sleep(5000);
+            if (Utils.CompareAt(device, "LeaveConfirm.png",new Rectangle (402, 769,215,52) ))
+            {
+                AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
+                Thread.Sleep(5000);
+
+            } 
+        }
+            public void Login()
+        {
+
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
             var device = AdbClient.Instance.GetDevices().First();
             if (Utils.CompareAt(device, "firstLoginButton.png", new Rectangle(268, 1153, 46, 46)))
@@ -65,7 +107,7 @@ namespace AutoTamQuocChi
                 }
                 else
                 {
-                    Console.WriteLine("in unknow screen !@!!!");
+                    Console.WriteLine("in unknown screen !!!!!");
                     RestartApp();
                     Login();
                     return;
@@ -77,16 +119,15 @@ namespace AutoTamQuocChi
 
             AdbClient.Instance.ExecuteRemoteCommand("input tap 300 500", device, receiver);
             Utils.ClearText();
-            var userame = Config.Tables["account"].Rows[accountIndex]["username"].ToString().Trim();
+            var username = Config.Tables["account"].Rows[accountIndex]["username"].ToString().Trim();
             var password = Config.Tables["account"].Rows[accountIndex]["password"].ToString().Trim();
 
-            Console.WriteLine("Username:"+ userame);
-            AdbClient.Instance.ExecuteRemoteCommand("input text \""+ userame + "\"", device, receiver);
+            Console.WriteLine("Username:"+ username);
+            AdbClient.Instance.ExecuteRemoteCommand("input text \""+ username + "\"", device, receiver);
           
 
             AdbClient.Instance.ExecuteRemoteCommand("input tap 300 560", device, receiver);
             Utils.ClearText();
-            Console.WriteLine("test");
             Thread.Sleep(1000);
             Console.WriteLine("Password:" + password);
             AdbClient.Instance.ExecuteRemoteCommand("input text "+ password, device, receiver);
@@ -100,7 +141,18 @@ namespace AutoTamQuocChi
 
 
             }
-
+            Console.WriteLine("Entered game...");
+            Thread.Sleep(7000);
+            EscapeLeaveWindow();
+            Console.WriteLine("Escape Leaving Window.");
+            GoToMaps();
+            Console.WriteLine("Go to maps...");
+            SelectMining();
+            Console.WriteLine("Selected Mining.");
+            //while (1==1) {
+            Mining();
+            Console.WriteLine("Mining...");
+            //}
         }
     }
 }
