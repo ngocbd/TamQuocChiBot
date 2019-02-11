@@ -71,10 +71,12 @@ namespace AutoTamQuocChi
             var device = AdbClient.Instance.GetDevices().First();
             if (Utils.CompareAt(device, "SecondMining.png", new Rectangle(437, 749, 53, 41)))
             {
+                
+                
+                AdbClient.Instance.ExecuteRemoteCommand("input tap 471 783", device, receiver);
+                Thread.Sleep(3000);
                 CreateTeam();
                 Console.WriteLine("Team Created!");
-                AdbClient.Instance.ExecuteRemoteCommand("input tap 461 783", device, receiver);
-                Thread.Sleep(3000);
             }
         }
         public void EscapeLeaveWindow()
@@ -83,9 +85,8 @@ namespace AutoTamQuocChi
             var device = AdbClient.Instance.GetDevices().First();
             AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
             Thread.Sleep(5000);
-            AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
-            Thread.Sleep(5000);
-            if (Utils.CompareAt(device, "LeaveConfirm.png",new Rectangle (402, 769,215,52) ))
+            
+            if (!Utils.CompareAt(device, "LeaveConfirm.png",new Rectangle (402, 769,215,52) ))
             {
                 AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
                 Thread.Sleep(5000);
