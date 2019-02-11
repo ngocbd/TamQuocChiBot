@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AutoTamQuocChi
@@ -12,6 +13,7 @@ namespace AutoTamQuocChi
     public class Bot
     {
         DataSet Config = new DataSet();
+        int accountIndex = 0;
         public Bot()
         {
             Config.ReadXml("Config.xml");
@@ -66,7 +68,7 @@ namespace AutoTamQuocChi
                     Console.WriteLine("in unknow screen !@!!!");
                     RestartApp();
                     Login();
-
+                    return;
 
                 }
 
@@ -75,6 +77,30 @@ namespace AutoTamQuocChi
 
             AdbClient.Instance.ExecuteRemoteCommand("input tap 300 500", device, receiver);
             Utils.ClearText();
+            var userame = Config.Tables["account"].Rows[accountIndex]["username"].ToString().Trim();
+            var password = Config.Tables["account"].Rows[accountIndex]["password"].ToString().Trim();
+
+            Console.WriteLine("Username:"+ userame);
+            AdbClient.Instance.ExecuteRemoteCommand("input text \""+ userame + "\"", device, receiver);
+          
+
+            AdbClient.Instance.ExecuteRemoteCommand("input tap 300 560", device, receiver);
+            Utils.ClearText();
+            Console.WriteLine("test");
+            Thread.Sleep(1000);
+            Console.WriteLine("Password:" + password);
+            AdbClient.Instance.ExecuteRemoteCommand("input text "+ password, device, receiver);
+            AdbClient.Instance.ExecuteRemoteCommand("input tap 356 650", device, receiver);
+            // 215 1130 290 96 
+            Thread.Sleep(1000);
+            if (Utils.CompareAt(device, "enterGameButton.png", new Rectangle(215, 1130, 290, 96)))
+            {
+                Console.WriteLine("In EnterGame  Screen");
+                AdbClient.Instance.ExecuteRemoteCommand("input tap 360 1175", device, receiver);
+
+
+            }
+
         }
     }
 }
