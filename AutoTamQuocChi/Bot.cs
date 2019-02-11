@@ -85,8 +85,9 @@ namespace AutoTamQuocChi
             var device = AdbClient.Instance.GetDevices().First();
             AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
             Thread.Sleep(5000);
-            
-            if (!Utils.CompareAt(device, "LeaveConfirm.png",new Rectangle (402, 769,215,52) ))
+            AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
+            Thread.Sleep(5000);
+            if (Utils.CompareAt(device, "LeaveConfirm.png",new Rectangle (402, 769,215,52) ))
             {
                 AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
                 Thread.Sleep(5000);
