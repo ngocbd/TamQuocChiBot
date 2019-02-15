@@ -12,10 +12,14 @@ namespace AutoTamQuocChi
 {
     class Utils
     {
-        private static Image CropImage(Image img, Rectangle cropArea)
+        public static Image CropImage(Image img, Rectangle cropArea)
         {
-            Bitmap bmpImage = new Bitmap(img);
-            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+            Bitmap bmp = new Bitmap(cropArea.Width, cropArea.Height);
+            using (Graphics gph = Graphics.FromImage(bmp))
+            {
+                gph.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), cropArea, GraphicsUnit.Pixel);
+            }
+            return bmp;
         }
         public static void ClearText()
         {
@@ -34,6 +38,10 @@ namespace AutoTamQuocChi
             var hash = ImageHashing.ImageHashing.AverageHash(Image.FromFile(path));
             return hash;
         }
+        public static int GetNumbers(string input)
+        {
+            return int.Parse(new string(input.Where(c => char.IsDigit(c)).ToArray()));
+        }
         public static bool Compare(Image img, string filename)
         {
             var hash1 = ImageHashing.ImageHashing.AverageHash(img);
@@ -44,7 +52,7 @@ namespace AutoTamQuocChi
             img.Save(Path.Combine(Environment.CurrentDirectory, @"", "cropped_" + filename));
             var score = ImageHashing.ImageHashing.Similarity(img, Image.FromFile(path));
             Console.WriteLine("Similarity score :" + score);
-            return score > 80;
+            return score > 90;
 
         }
         public static bool CompareAt(DeviceData device, string filename, Rectangle rect)
@@ -52,6 +60,15 @@ namespace AutoTamQuocChi
             Image screen = AdbClient.Instance.GetFrameBufferAsync(device, CancellationToken.None).Result;
             Image cropped = CropImage(screen, rect);
             return Compare(cropped, filename);
+
+        }
+        public static Image CropAt(DeviceData device,Rectangle rect)
+        {
+            Image screen = AdbClient.Instance.GetFrameBufferAsync(device, CancellationToken.None).Result;
+            Image cropped = CropImage(screen, rect);
+            cropped.Save("CropAt_" + rect.GetHashCode().ToString() + ".png");
+
+            return cropped;
 
         }
         static void Main2(string[] args)

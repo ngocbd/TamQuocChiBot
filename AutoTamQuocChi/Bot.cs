@@ -1,4 +1,5 @@
-﻿using SharpAdbClient;
+﻿using Tesseract;
+using SharpAdbClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,10 +15,14 @@ namespace AutoTamQuocChi
     {
         DataSet Config = new DataSet();
         int accountIndex = 0;
+
+        TesseractEngine engine = new TesseractEngine(@"E:\Downloads\tessdata-3.04.00","vie");
+
         public Bot()
         {
             Config.ReadXml("Config.xml");
             Login();
+           
 
         }
         public void RestartApp()
@@ -61,22 +66,42 @@ namespace AutoTamQuocChi
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
             var device = AdbClient.Instance.GetDevices().First();
             AdbClient.Instance.ExecuteRemoteCommand("input tap 225 1200", device, receiver);
-            Thread.Sleep(3000);
+            Thread.Sleep(200);
             AdbClient.Instance.ExecuteRemoteCommand("input tap 500 1200", device, receiver);
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
         }
-        public void Mining()
+        public void Mining(int tried=0)
         {
+            if (tried > 5) return;
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
             var device = AdbClient.Instance.GetDevices().First();
+            if (Utils.CompareAt(device, "LeaveConfirm.png", new Rectangle(402, 769, 215, 52)))
+            {
+                AdbClient.Instance.ExecuteRemoteCommand("input keyevent KEYCODE_BACK", device, receiver);
+                return;
+
+            }
+            // 509 689 
+            if (Utils.CompareAt(device, "SecondMining.png", new Rectangle(509, 689, 55, 44)))
+            {
+                SelectMining();
+                Mining(++tried);
+                return;
+            }
+            
             if (Utils.CompareAt(device, "SecondMining.png", new Rectangle(437, 749, 53, 41)))
             {
-                
-                
+
+
                 AdbClient.Instance.ExecuteRemoteCommand("input tap 471 783", device, receiver);
                 Thread.Sleep(3000);
                 CreateTeam();
                 Console.WriteLine("Team Created!");
+            }
+            else
+            {
+                SelectMining();
+                Mining(++tried);
             }
         }
         public void EscapeLeaveWindow()
@@ -94,7 +119,7 @@ namespace AutoTamQuocChi
 
             } 
         } 
-            public void Login()
+        public void Login()
         {
 
             ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
@@ -159,24 +184,87 @@ namespace AutoTamQuocChi
             Thread.Sleep(7000);
             EscapeLeaveWindow();
             Console.WriteLine("Escape Leaving Window.");
-            GoToMaps();
             Console.WriteLine("Go to maps...");
+            GoToMaps();
             SelectMining();
             Console.WriteLine("Selected Mining.");
-            
+
             Mining();
             Console.WriteLine("Mining...");
+            try
+            {
+                // 165 85
+                Image tmp = Utils.CropAt(device, new Rectangle(165, 85, 100, 30));
+                string numberOFLand = "";
+                engine.SetVariable("tessedit_char_whitelist", "0123456789|/");
+
+
+                Page page =  engine.Process(new Bitmap(tmp));
+                numberOFLand = page.GetText();
+                page.Dispose();
+
+                Console.WriteLine("numberOFLand:" + numberOFLand);
+
+                string [] pair = numberOFLand.Split(new Char[] { '\\', '|', '/'});
+
+                int have = Utils.GetNumbers(pair[0]);
+                int total = Utils.GetNumbers(pair[1]);
+
+                Console.WriteLine("have:" + have+"/ total:"+total);
+
+                if (total > have)
+                {
+                    // 53 1033
+                    AdbClient.Instance.ExecuteRemoteCommand("input tap 53 1033", device, receiver);
+                    // 30 862
+                    Thread.Sleep(200);
+                    AdbClient.Instance.ExecuteRemoteCommand("input tap 30 862", device, receiver);
+
+                    Thread.Sleep(200);
+                    AdbClient.Instance.ExecuteRemoteCommand("input tap 538 1205", device, receiver);
+                    //Console.ReadKey();
+                    // 444 745 
+                    Thread.Sleep(1000);
+                    if (Utils.CompareAt(device, "StartAtk.png", new Rectangle(444, 745, 40, 45)))
+                    {
+
+                        Console.WriteLine("Can atk !->");
+                        AdbClient.Instance.ExecuteRemoteCommand("input tap 460 778", device, receiver);
+                        Thread.Sleep(400);
+                        this.CreateTeam();
+                       
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception ex:"+ex.Message);
+            }
+
+
+
+            NextAccount();
+
+
+
+
+
+        }
+        public void NextAccount()
+        {
             if (accountIndex == (Config.Tables["account"].Rows.Count - 1))
             {
                 accountIndex = 0;
-            } else
+            }
+            else
             {
                 accountIndex++;
-                
+
             }
             RestartApp();
             Login();
-
         }
     }
 }
