@@ -55,11 +55,31 @@ namespace AutoTamQuocChi
             return score > 90;
 
         }
+        public static bool Compare(Image img, string filename,int thresoul)
+        {
+            var hash1 = ImageHashing.ImageHashing.AverageHash(img);
+            var hash2 = getHashFromSample(filename);
+            Console.WriteLine("ImageObject :" + hash1);
+            Console.WriteLine("Hashing :" + filename + " : " + hash2);
+            string path = Path.Combine(Environment.CurrentDirectory, @"sample\", filename);
+            img.Save(Path.Combine(Environment.CurrentDirectory, @"", "cropped_" + filename));
+            var score = ImageHashing.ImageHashing.Similarity(img, Image.FromFile(path));
+            Console.WriteLine("Similarity score :" + score);
+            return score > thresoul;
+
+        }
         public static bool CompareAt(DeviceData device, string filename, Rectangle rect)
         {
             Image screen = AdbClient.Instance.GetFrameBufferAsync(device, CancellationToken.None).Result;
             Image cropped = CropImage(screen, rect);
             return Compare(cropped, filename);
+
+        }
+        public static bool CompareAt(DeviceData device, string filename, Rectangle rect, int thresoul)
+        {
+            Image screen = AdbClient.Instance.GetFrameBufferAsync(device, CancellationToken.None).Result;
+            Image cropped = CropImage(screen, rect);
+            return Compare(cropped, filename, thresoul);
 
         }
         public static Image CropAt(DeviceData device,Rectangle rect)

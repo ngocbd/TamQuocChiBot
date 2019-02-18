@@ -2,6 +2,70 @@
 <accounts>
   <account>
     <username>
+      Kiemtien01
+    </username>
+    <password>
+      123456
+    </password>
+  </account>
+  <account>
+    <username>
+      Khanh010
+    </username>
+    <password>
+      daibangk8
+    </password>
+  </account>
+  <account>
+    <username>
+      khanh011
+    </username>
+    <password>
+      daibangk8
+    </password>
+  </account>
+  <account>
+    <username>
+      khanh015
+    </username>
+    <password>
+      daibangk8
+    </password>
+  </account>
+  <account>
+    <username>
+      khanh017
+    </username>
+    <password>
+      daibangk8
+    </password>
+  </account>
+  <account>
+    <username>
+      Kiemtien02
+    </username>
+    <password>
+      123456
+    </password>
+  </account>
+  <account>
+    <username>
+      enbiso1
+    </username>
+    <password>
+      123456
+    </password>
+  </account>
+  <account>
+    <username>
+      Anhak_99
+    </username>
+    <password>
+      anhgaren1
+    </password>
+  </account>
+  <account>
+    <username>
       agrukuki
     </username>
     <password>
@@ -88,4 +152,21 @@
       abcD1234
     </password>
   </account>
+  <account>
+    <username>
+      anhratroi
+    </username>
+    <password>
+      spanker321
+    </password>
+  </account>
+  <account>
+    <username>
+      khoinghiep
+    </username>
+    <password>
+      123456
+    </password>
+  </account>
+ 
 </accounts>
